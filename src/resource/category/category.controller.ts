@@ -1,0 +1,48 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { CategoriesService } from './category.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { FileInterceptor} from '@nestjs/platform-express';
+import { AuthGuard } from 'src/guards/auth-guard';
+import { Roles, RolesGuard } from 'src/guards/role-guard';
+import { UserRole } from 'src/entities/enums/role.enum';
+import { UpdateCategoryDto } from './dto/update-category.dto';
+
+
+@UseGuards(AuthGuard,RolesGuard)
+@Controller('category')
+export class CategoryController {
+  constructor(private readonly categoryService: CategoriesService) {}
+
+  @Get()
+  async all(){
+    return this.categoryService.findAll()
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Post('add')
+  @UseInterceptors(FileInterceptor('photo'))
+  async addCategory(
+    @Body() dto: CreateCategoryDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.categoryService.createCategory(dto, file);
+  }
+
+  @Roles(UserRole.ADMIN)
+  @Patch(":id")
+  @UseInterceptors(FileInterceptor('photo'))
+  async updateCategory(
+    @Body() dto:UpdateCategoryDto,
+    @Param('id') id:number,
+    @UploadedFile() file: Express.Multer.File,
+  ) { 
+    return this.categoryService.updateCategory(id,dto,file)
+  }
+
+
+  @Roles(UserRole.ADMIN)
+  @Delete(':id')
+  async deleteCategory(@Param('id') id:number){
+    return this.categoryService.deleteCategory(id)
+  }
+}

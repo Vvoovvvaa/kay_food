@@ -1,0 +1,12 @@
+volumes:
+  postgis17_data:
+
+services:
+  db:
+    image: postgis/postgis:latest
+    ports:
+      - 5000:5432
+    volumes:
+      - postgis17_data:/var/lib/postgresql/data/
+    env_file:
+      - docker.env
