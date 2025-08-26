@@ -41,8 +41,8 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
-.dokcer.env
-.app.yaml
+dokcer.env
+app.yaml
 
 # temp directory
 .temp
