@@ -6,6 +6,7 @@ import { Roles, RolesGuard } from 'src/guards/role-guard';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { UserRole } from 'src/entities/enums/role.enum';
 import { OwnerCheckGuard } from 'src/guards/owner-chechk-guard';
+import { ChangeRoleDTO } from './dto/change-role.dto';
 
 
 @UseGuards(AuthGuard,RolesGuard)
@@ -47,15 +48,8 @@ export class UsersController {
 
   @Roles(UserRole.ADMIN)
   @Post(':id')
-  async addAdmin(@Param('id') id:number){
-    return this.usersService.addAdmin(id)
-  }
-
-
-  @Roles(UserRole.ADMIN)
-  @Post('admin/:id')
-  async removeAdmin(@Param('id') id:number){
-    return this.usersService.removeAdmin(id)
+  async addAdmin(@Param('id') id:number,@Body() dto:ChangeRoleDTO){
+    return this.usersService.changeRoles(id,dto)
   }
 
 
