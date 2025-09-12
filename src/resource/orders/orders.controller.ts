@@ -4,6 +4,8 @@ import { AuthGuard } from 'src/guards/auth-guard';
 import { Roles, RolesGuard } from 'src/guards/role-guard';
 import { OrderDto } from './dto/create-order-dto';
 import { UserRole } from 'src/entities/enums/role.enum';
+import { IdDto } from 'src/dto/id-param.dto';
+import { AuthUser } from 'src/decorators/auth-user.decorator';
 
 @UseGuards(AuthGuard,RolesGuard)
 @Controller('orders')
@@ -18,21 +20,19 @@ export class OrdersController {
 
   @Roles(UserRole.ADMIN,UserRole.USER)
   @Post()
-  async addOrder(@Body() dto: OrderDto, @Req() req: any) {
-    const user = req.user;
-    return this.ordersService.create(dto, user);
+  async addOrder(@Body() dto: OrderDto, @AuthUser() user: any) {
+    return this.ordersService.create(dto, user.id);
   }
 
   @Get('my')
-  async getMyOrders(@Req() req: any) {
-    const user = req.user;
-    return this.ordersService.getMyOrders(user);
+  async getMyOrders(@AuthUser() user: any) {
+    return this.ordersService.getMyOrders(user.id);
   }
   
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async deleteOrder(@Param('id') id: number) {
-    return this.ordersService.removeOrder(id);
+  async deleteOrder(@Param() param: IdDto) {
+    return this.ordersService.removeOrder(param.id);
   }
 
 }

@@ -7,6 +7,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ingrediendDTO } from './dto/ingredient-DTO';
+import { IdDto } from 'src/dto/id-param.dto';
 
 
 
@@ -38,23 +39,23 @@ export class ProductsController {
   @UseInterceptors(FilesInterceptor('photos'))
   async updateCategory(
     @Body() dto: UpdateProductDto,
-    @Param('id') id: number,
+    @Param() param: IdDto,
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
-    return this.productsService.updateProduct(id, dto, files || [])
+    return this.productsService.updateProduct(param.id, dto, files || [])
   }
 
 
   @Roles(UserRole.ADMIN)
   @Delete(":id")
-  async deleteProduct(@Param('id') id:number){
-    return this.productsService.removeProduct(id)
+  async deleteProduct(@Param() param: IdDto){
+    return this.productsService.removeProduct(param.id)
   }
 
   @Roles(UserRole.USER,UserRole.ADMIN)
   @Get(':id')
-  async findOne(@Param('id') id:number){
-    return this.productsService.findOne(id)
+  async findOne(@Param() param: IdDto){
+    return this.productsService.findOne(param.id)
   }
 
   @Roles(UserRole.ADMIN,UserRole.USER)

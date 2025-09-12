@@ -7,6 +7,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { UserRole } from 'src/entities/enums/role.enum';
 import { OwnerCheckGuard } from 'src/guards/owner-chechk-guard';
 import { ChangeRoleDTO } from './dto/change-role.dto';
+import { IdDto } from 'src/dto/id-param.dto';
 
 
 @UseGuards(AuthGuard,RolesGuard)
@@ -28,8 +29,8 @@ export class UsersController {
 
   @Roles(UserRole.ADMIN,UserRole.USER)
   @Get(':id')
-  async findOneUser(@Param('id') id :number){
-    return this.usersService.findOne(id)
+  async findOneUser(@Param() param: IdDto){
+    return this.usersService.findOne(param.id)
   }
 
 
@@ -42,14 +43,14 @@ export class UsersController {
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async deleteUser(@Param("id") id:number){
-    return this.usersService.removeUser(id)
+  async deleteUser(@Param() param: IdDto){
+    return this.usersService.removeUser(param.id)
   }
 
   @Roles(UserRole.ADMIN)
   @Post(':id')
-  async addAdmin(@Param('id') id:number,@Body() dto:ChangeRoleDTO){
-    return this.usersService.changeRoles(id,dto)
+  async addAdmin(@Param() param: IdDto,@Body() dto:ChangeRoleDTO){
+    return this.usersService.changeRoles(param.id,dto)
   }
 
 

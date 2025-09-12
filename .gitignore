@@ -41,7 +41,7 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
-dokcer.env
+docker.env
 app.yaml
 # SEIUfaiueshfioDSHFouhdsFilhzDLIHFukdsHckjzl:
 # temp directory

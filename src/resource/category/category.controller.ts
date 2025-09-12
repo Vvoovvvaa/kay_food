@@ -6,6 +6,7 @@ import { AuthGuard } from 'src/guards/auth-guard';
 import { Roles, RolesGuard } from 'src/guards/role-guard';
 import { UserRole } from 'src/entities/enums/role.enum';
 import { UpdateCategoryDto } from './dto/update-category.dto';
+import { IdDto } from 'src/dto/id-param.dto';
 
 
 @UseGuards(AuthGuard,RolesGuard)
@@ -33,16 +34,16 @@ export class CategoryController {
   @UseInterceptors(FileInterceptor('photo'))
   async updateCategory(
     @Body() dto:UpdateCategoryDto,
-    @Param('id') id:number,
+    @Param() param: IdDto,
     @UploadedFile() file: Express.Multer.File,
   ) { 
-    return this.categoryService.updateCategory(id,dto,file)
+    return this.categoryService.updateCategory(param.id,dto,file)
   }
 
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async deleteCategory(@Param('id') id:number){
-    return this.categoryService.deleteCategory(id)
+  async deleteCategory(@Param() param: IdDto){
+    return this.categoryService.deleteCategory(param.id)
   }
 }
