@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
+import { FileInterceptor} from '@nestjs/platform-express';  
+
+
 import { CategoriesService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { FileInterceptor} from '@nestjs/platform-express';
-import { AuthGuard } from 'src/guards/auth-guard';
-import { Roles, RolesGuard } from 'src/guards/role-guard';
+import { AuthGuard,Roles,RolesGuard } from '../../guards';
 import { UserRole } from 'src/entities/enums/role.enum';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { IdDto } from 'src/dto/id-param.dto';

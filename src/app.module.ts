@@ -1,23 +1,24 @@
 import { Module } from '@nestjs/common';
+import {TypeOrmModule} from '@nestjs/typeorm'
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { join } from 'path';
+
+
 import { AppController } from './app.controller';
+import { ProductsModule } from './resource/products/products.module';
 import { AppService } from './app.service';
 import { AuthModule } from './resource/auth/auth.module';
 import { CategoryModule } from './resource/category/category.module';
-import { ProductsModule } from './resource/products/products.module';
 import { OrdersModule } from './resource/orders/orders.module';
-import {TypeOrmModule} from '@nestjs/typeorm'
-import { ServeStaticModule } from '@nestjs/serve-static';
-import { ConfigModule } from '@nestjs/config';
-import { join } from 'path';
-import { User } from './entities/user';
-import { Product } from './entities/product';
-import { Order } from './entities/order';
-import { Category } from './entities/category';
-import { SecretCode } from './entities/secret-code';
-import { MediaFiles } from './entities/media-files';
+import { User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,OrderItem } from './entities';
 import { UsersModule } from './resource/users/users.module';
-import { Ingredient } from './entities/ingredients';
-import { OrderItem } from './entities/order-item';
+import { ZonesModule } from './resource/zone/zone.module';
+import { Zone } from './entities/zones-entity';
+import { validationScehma } from './validation';
+import { jwtConfig } from './configs/jwt.config';
+import { databaseConfig } from './configs/database.config';
+import { IDatabseConfig } from './models';
 
 @Module({
   imports: [
@@ -26,26 +27,37 @@ import { OrderItem } from './entities/order-item';
     CategoryModule,
     OrdersModule,
     UsersModule,
+    ZonesModule,
 
     ConfigModule.forRoot({
-      isGlobal:true
+      isGlobal:true,
+      validationSchema: validationScehma,
+      load: [jwtConfig,databaseConfig]
     }),
 
     ServeStaticModule.forRoot({
           rootPath: join (__dirname,'..','uploads/'),
           serveRoot: '/public/',
         }),
-    
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DATABASE_HOST,
-      port: +(process.env.DATABASE_PORT as string),
-      username: process.env.DATABASE_USER,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_NAME,
-      entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem],
-      synchronize: true,
-    }),
+      TypeOrmModule.forRootAsync({
+        imports:[ConfigModule],
+        inject: [ConfigService],
+        useFactory:(configService:ConfigService) => { 
+          const dbconfig: IDatabseConfig = configService.get("DATABASE_CONFIG") as IDatabseConfig
+          return{
+            type: 'postgres',
+            host: dbconfig.HOST,
+            port: dbconfig.PORT,
+            username: dbconfig.USER,
+            password: dbconfig.PASSWORD,
+            database: dbconfig.NAME,
+            entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone],
+            synchronize: true,
+          }
+        }
+      }),
+  
+    TypeOrmModule.forFeature([User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone])
     
 
   ],

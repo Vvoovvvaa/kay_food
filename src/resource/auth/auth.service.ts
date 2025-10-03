@@ -1,26 +1,33 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user';
 import { Repository } from 'typeorm';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { SecretCode } from 'src/entities/secret-code';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { User,SecretCode } from '../../entities';
+import { CreateAuthDto } from './dto/create-auth.dto';
 import { ChechkCodeDto } from './dto/check-code.dto';
 import { IAuthenticationResponse } from './models/authentication-response';
-import { randomCode } from 'src/helpers/random-code-helper';
+import { randomCode } from '../../helpers';
 import { UserRole } from 'src/entities/enums/role.enum';
+import { Ijwtconfig } from 'src/models';
+import { ConfigService } from '@nestjs/config';
+
+
 
 @Injectable()
 export class AuthService {
-
+  private jwtconfig:Ijwtconfig
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @InjectRepository(SecretCode)
     private readonly secretRepository: Repository<SecretCode>,
-    private jwtservice: JwtService
-
-  ) { }
+    private jwtservice: JwtService,
+    private readonly configService:ConfigService
+    
+  ) {
+    this.jwtconfig = this.configService.get("JWT_CONFIG" ) as Ijwtconfig
+   }
 
   async loginOrRegister(dto: CreateAuthDto): Promise<IAuthenticationResponse> {
     const { phone } = dto
@@ -45,7 +52,7 @@ export class AuthService {
     const payload = { sub: user.id, phone: user.phone,role:UserRole};
 
     return {
-      accessToken: this.jwtservice.sign(payload, { secret: process.env.JWT_SECRET }),
+      accessToken: this.jwtservice.sign(payload, { secret: this.jwtconfig.secret }),
       code: secretCode.code
     };
   }
@@ -65,7 +72,7 @@ export class AuthService {
     const payload = { sub: secret.user.id, phone: secret.user.phone,role:secret.user.role }
 
     return {
-      accessToken: this.jwtservice.sign(payload, { secret: process.env.JWT_SECRET1 }),
+      accessToken: this.jwtservice.sign(payload, { secret: this.jwtconfig.secret1 }),
       message: "authentication successful"
     }
   }

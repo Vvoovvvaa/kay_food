@@ -1,4 +1,4 @@
-import { IsInt, IsArray, ValidateNested, Min, IsIn } from 'class-validator';
+import { IsInt, IsArray, ValidateNested, Min, IsBoolean, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class OrderItemDto {
@@ -14,11 +14,20 @@ export class OrderItemDto {
   quantity: number;
 }
 
-
 export class OrderDto {
-
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => OrderItemDto)
   items: OrderItemDto[];
+  @IsOptional()
+  @IsBoolean()
+  delivery?: boolean;
+
+  @IsOptional()
+  @IsNumber()
+  x?: number;
+
+  @IsOptional()
+  @IsNumber()
+  y?: number;
 }

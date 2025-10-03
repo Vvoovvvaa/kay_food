@@ -1,11 +1,10 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Category } from 'src/entities/category';
 import { Repository } from 'typeorm';
+
+import { Category,MediaFiles } from '../../entities';
 import { CreateCategoryDto } from './dto/create-category.dto';
-import { PhotoValidator } from 'src/helpers/photos-validation-helper.';
-import { MediaFiles } from 'src/entities/media-files';
-import { FileHelper } from 'src/helpers/file-helper';
+import {FileHelper,PhotoValidator} from '../../helpers'
 import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()

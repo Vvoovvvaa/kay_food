@@ -3,34 +3,42 @@ import { Base } from "./base";
 import { UserRole } from "./enums/role.enum";
 import { MediaFiles } from "./media-files";
 import { Order } from "./order";
+import { Product } from "./product";
 
-@Entity('Users')
+@Entity('users')
 export class User extends Base {
-    @Column({ name: "first_name",nullable:true })
-    firstName: string 
+  @Column()
+  phone: string
 
-    @Column({ name: "last_name",nullable:true })
-    lastName: string
+  @Column({ name: 'first_name', nullable: true })
+  firstName?: string
 
-    @Column({nullable:true})
-    age:number
+  @Column({ name: 'last_name', nullable: true })
+  lastName?: string
 
-    @ManyToMany(() => MediaFiles,{cascade:true})
-    @JoinTable({
-        name: "user_media_files",
-        joinColumn: { name: "user_id", referencedColumnName: "id" },
-        inverseJoinColumn: { name: "media_file_id", referencedColumnName: "id" }
-    })
-    mediaFiles: MediaFiles[]
+  @Column({ nullable: true })
+  age?: number
 
-    @Column()
-    phone: string
+  @Column({ default: UserRole.USER })
+  role: UserRole
 
-    @Column({ default: UserRole.USER })
-    role: UserRole
+  @ManyToMany(() => MediaFiles, { cascade: true })
+  @JoinTable({
+    name: 'user_media_files',
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'media_file_id', referencedColumnName: 'id' },
+  })
+  mediaFiles: MediaFiles[]
 
-    @OneToMany(() => Order, order => order.user)
-    orders: Order[]
+  @ManyToMany(() => Product, { eager: true })
+  @JoinTable({ name: 'user_favorites' })
+  favorites: Product[];
 
+  secretCodes: any;
+
+  @OneToMany(() => Order, order => order.user)
+  orders: Order[];
 
 }
+
+

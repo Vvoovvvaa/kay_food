@@ -1,15 +1,14 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+
+import { Product,MediaFiles,Category,Ingredient } from '../../entities';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from 'src/entities/product';
 import { Repository } from 'typeorm';
-import { MediaFiles } from 'src/entities/media-files';
-import { Category } from 'src/entities/category';
-import { FileHelper } from 'src/helpers/file-helper';
-import { PhotoValidator } from 'src/helpers/photos-validation-helper.';
 import { ingrediendDTO } from './dto/ingredient-DTO';
-import { Ingredient } from 'src/entities/ingredients';
+import {FileHelper,PhotoValidator} from '../../helpers'
+
 
 @Injectable()
 export class ProductsService {

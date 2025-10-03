@@ -1,16 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user';
 import { Repository } from 'typeorm';
-import { MediaFiles } from 'src/entities/media-files';
-import { PhotoValidator } from 'src/helpers/photos-validation-helper.';
-import { FileHelper } from 'src/helpers/file-helper';
-import { UserRole } from 'src/entities/enums/role.enum';
+
+
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User,MediaFiles, Product } from '../../entities';
 import { ChangeRoleDTO } from './dto/change-role.dto';
+import {FileHelper,PhotoValidator} from '../../helpers'
 
 @Injectable()
 export class UsersService {
+  productRepository: any;
 
 
   constructor(
@@ -78,6 +78,52 @@ export class UsersService {
     }
     user.role = dto.role
     return this.userRepository.save(user)
+  }
+
+   async addFavorite(userId: number, productId: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['favorites'],
+    });
+    if (!user) throw new NotFoundException('User not found');
+
+    const product = await this.productRepository.findOne({ where: { id: productId } });
+    if (!product) throw new NotFoundException('Product not found');
+
+    if (user.favorites.find((e) => e.id === product.id)) {
+      return user;
+    }
+    user.favorites.push(product);
+    return await this.userRepository.save(user);
+
+  }
+
+  async getFavorites(userId: number): Promise<Product[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['favorites'],
+    });
+
+    if (user && user.favorites) {
+      return user.favorites;
+    } else {
+      return [];
+    }
+
+  }
+
+  async removeFavorite(userId: number, productId: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['favorites'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found')
+    };
+
+    user.favorites = user.favorites.filter((e) => e.id !== productId);
+
+    return await this.userRepository.save(user);
   }
 
 
