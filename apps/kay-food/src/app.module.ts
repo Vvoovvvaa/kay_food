@@ -53,7 +53,7 @@ import { LoggerMiddleware } from '../../../libs/common/src/middlewares';
             password: dbconfig.PASSWORD,
             database: dbconfig.NAME,
             entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone],
-            synchronize: true,
+            synchronize: false,
           }
         }
       }),

@@ -54,7 +54,7 @@ import { Admins } from '@app/common/database/entities/admins';
             password: dbconfig.PASSWORD,
             database: dbconfig.NAME,
             entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins],
-            synchronize: true,
+            synchronize: false,
           }
         }
       }),
