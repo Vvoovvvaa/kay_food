@@ -4,27 +4,41 @@ import { IsNotEmpty, IsNumber, IsString } from "class-validator"
 export class CreateProductDto {
     @IsString()
     @IsNotEmpty()
-    @ApiHideProperty()
-    productName:string
+    productNameEn: string
 
     @IsString()
     @IsNotEmpty()
     @ApiHideProperty()
-    description:string
+    productNameRu: string
+
+    @IsString()
+    @IsNotEmpty()
+    productNameAm: string
+
+    @IsString()
+    @IsNotEmpty()
+    descriptionEn: string
+
+    @IsString()
+    @IsNotEmpty()
+    descriptionRu: string
+
+    @IsString()
+    @IsNotEmpty()
+    descriptionAm: string
 
     @IsNumber()
     @IsNotEmpty()
-    @ApiHideProperty()
-    weight:number
+    weight: number
+
 
     @IsNumber()
     @IsNotEmpty()
-    @ApiHideProperty()
-    price:number
+    price: number
+
 
     @IsNotEmpty()
-    @ApiHideProperty()
-    categoryId:number
+    categoryId: number
 
 
 

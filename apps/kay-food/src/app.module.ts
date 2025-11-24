@@ -11,7 +11,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './resource/auth/auth.module';
 import { CategoryModule } from './resource/category/category.module';
 import { OrdersModule } from './resource/orders/orders.module';
-import { User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,OrderItem } from '../../../libs/common/src/database/entities';
+import { User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,OrderItem, Language, ProductTranslation,  } from '../../../libs/common/src/database/entities';
 import { UsersModule } from './resource/users/users.module';
 import { ZonesModule } from './resource/zone/zone.module';
 import { Zone } from '../../../libs/common/src/database/entities/zones-entity';
@@ -52,13 +52,13 @@ import { LoggerMiddleware } from '../../../libs/common/src/middlewares';
             username: dbconfig.USER,
             password: dbconfig.PASSWORD,
             database: dbconfig.NAME,
-            entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone],
-            synchronize: false,
+            entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Language,ProductTranslation],
+            synchronize: true,
           }
         }
       }),
   
-    TypeOrmModule.forFeature([User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone])
+    TypeOrmModule.forFeature([User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Language,ProductTranslation])
     
 
   ],

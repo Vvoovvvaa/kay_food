@@ -5,6 +5,7 @@ export const validationScehma = Joi.object({
   JWT_SECRET: Joi.string().required(),
   JWT_SECRET1: Joi.string().required(),
   JWT_ADMIN_SECRET: Joi.string().required(),
+  JWT_ADMIN_SECRET1: Joi.string().required(),
   DATABASE_HOST: Joi.string().required(),
   DATABASE_NAME: Joi.string().required(),
   DATABASE_USER:Joi.string().required(),

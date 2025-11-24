@@ -4,24 +4,24 @@ import { CreateAdminDto } from './dto/admin-create.dto';
 import { AdminLogDto } from './dto/admin-login.dto';
 import { AdminAuthGuard } from '@app/common/guards/admin-auth-guard';
 
-@UseGuards(AdminAuthGuard)
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly adminService: AdminService) {}
+  constructor(private readonly adminService: AdminService) { }
 
   @Post()
   async addAdmin(@Body() createAdminDto: CreateAdminDto) {
-    return this.adminService.addAdmin(createAdminDto);
+    return this.adminService.createAdmin(createAdminDto);
   }
 
+  @UseGuards(AdminAuthGuard)
   @Post('login')
-  async adminLogin(@Body() login:AdminLogDto){
-    return this.adminLogin(login)
+  async adminLogin(@Body() login: AdminLogDto) {
+    return this.adminService.adminLogin(login);
   }
 
+  @UseGuards(AdminAuthGuard)
   @Get()
-  async findAll(){
-    return this.findAll()
+  async findAll() {
+    return this.adminService.findAll();
   }
-
 }

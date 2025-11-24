@@ -1,9 +1,11 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, OneToOne } from "typeorm";
 import { Base } from "./base";
-import { UserRole } from "./enums/role.enum";
+import { UserRole } from "../enums/role.enum";
 import { MediaFiles } from "./media-files";
 import { Order } from "./order";
 import { Product } from "./product";
+import { UserSecurity } from "./user-security";
+import { accauntStatus } from "../enums";
 
 @Entity('users')
 export class User extends Base {
@@ -42,6 +44,12 @@ export class User extends Base {
 
   @OneToMany(() => Order, order => order.user)
   orders: Order[];
+
+  @OneToOne(() => UserSecurity, (security) => security.user)
+  security: UserSecurity;
+
+  @Column({default:accauntStatus.ACTIVE,type:"enum",enum:accauntStatus})
+  accountStatus:accauntStatus
 
 }
 

@@ -52,7 +52,7 @@ export class UsersService {
     }
     return findUser
 
-  }
+  }  
 
    async addFavorite(userId: number, productId: number): Promise<User> {
     const user = await this.userRepository.findOne({

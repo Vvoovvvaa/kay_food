@@ -18,7 +18,7 @@ export class CategoriesService {
   ) { }
 
   async createCategory(dto: CreateCategoryDto, file?: Express.Multer.File) {
-  let parent: Category | undefined;
+  let parent
   if (dto.parentId) {
     const parentCheck = await this.categoryRepository.findOne({ where: { id: dto.parentId } });
     if (!parentCheck) {

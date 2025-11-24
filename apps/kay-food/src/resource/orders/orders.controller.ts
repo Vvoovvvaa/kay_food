@@ -4,9 +4,9 @@ import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/c
 import { OrdersService } from './orders.service';
 import { OrderDto } from './dto/create-order-dto';
 import { AuthUser } from '../../../../../libs/common/src/decorators/auth-user.decorator';
-import { RolesGuard,AuthGuard} from '../../../../../libs/common/src/guards'
+import { AuthGuard} from '../../../../../libs/common/src/guards'
 
-@UseGuards(AuthGuard, RolesGuard)
+@UseGuards(AuthGuard)
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) { }

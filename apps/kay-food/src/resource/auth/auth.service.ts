@@ -8,7 +8,7 @@ import { CreateAuthDto } from './dto/create-auth.dto';
 import { ChechkCodeDto } from './dto/check-code.dto';
 import { IAuthenticationResponse } from './models/authentication-response';
 import { randomCode } from '../../../../../libs/common/src/helpers';
-import { UserRole } from '../../../../../libs/common/src/database/entities/enums/role.enum';
+import { UserRole } from '../../../../../libs/common/src/database/enums/role.enum';
 import { Ijwtconfig } from '../../../../../libs/common/src/models';
 import { ConfigService } from '@nestjs/config';
 

@@ -11,7 +11,7 @@ import { AdminService } from './admin.service';
 import { AdminsModule } from './resources/admins/admins.module';
 import { CategoryModule } from './resources/category/category.module';
 import { OrdersModule } from './resources/orders/orders.module';
-import { User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,OrderItem } from '../../../libs/common/src/database/entities';
+import { User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,OrderItem, Language, ProductTranslation, UserSecurity } from '../../../libs/common/src/database/entities';
 import { UsersModule } from './resources/users/users.module';
 import { ZonesModule } from './resources/zone/zone.module';
 import { Zone } from '../../../libs/common/src/database/entities/zones-entity';
@@ -21,6 +21,7 @@ import { databaseConfig } from '../../../libs/common/src/configs/database.config
 import { IDatabseConfig } from '../../../libs/common/src/models';
 import { LoggerMiddleware } from '../../../libs/common/src/middlewares';
 import { Admins } from '@app/common/database/entities/admins';
+import { AdminSecurity } from '@app/common/database/entities/admin-security';
 
 @Module({
   imports: [
@@ -53,13 +54,13 @@ import { Admins } from '@app/common/database/entities/admins';
             username: dbconfig.USER,
             password: dbconfig.PASSWORD,
             database: dbconfig.NAME,
-            entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins],
-            synchronize: false,
+            entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins,Language,ProductTranslation,UserSecurity,AdminSecurity],
+            synchronize: true,
           }
         }
       }),
   
-    TypeOrmModule.forFeature([User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins])
+    TypeOrmModule.forFeature([User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins,Language,ProductTranslation,UserSecurity,AdminSecurity])
     
 
   ],

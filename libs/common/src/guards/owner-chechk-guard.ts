@@ -1,5 +1,5 @@
 import {CanActivate,ExecutionContext,ForbiddenException,Injectable} from '@nestjs/common';
-import { UserRole } from '../database/entities/enums/role.enum';
+import { UserRole } from '../database/enums/role.enum';
 
 @Injectable()
 export class OwnerCheckGuard implements CanActivate {
