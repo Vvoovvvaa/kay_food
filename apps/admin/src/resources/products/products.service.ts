@@ -1,5 +1,5 @@
 import { Product, MediaFiles, Category, Ingredient, Language, ProductTranslation } from "@app/common/database/entities";
-import { ProductLanguage } from "@app/common/database/enums";
+import { Languages } from "@app/common/database/enums";
 import { PhotoValidator, FileHelper } from "@app/common/helpers";
 import { Injectable, ConflictException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -30,11 +30,11 @@ export class ProductsService {
     private readonly productTranslation: Repository<ProductTranslation>,
   ) { }
 
-  async create(dto: CreateProductDto, files?: Express.Multer.File[]) {
+  async createProduct(dto: CreateProductDto, files?: Express.Multer.File[]) {
     const existEnName = await this.productTranslation.findOne({
       where: {
         productName: dto.productNameEn,
-        language: { name: ProductLanguage.ENGLISH },
+        language: { name: Languages.ENGLISH },
       },
       relations: ['language'],
     });
@@ -65,9 +65,9 @@ export class ProductsService {
     await this.productRepository.save(product);
 
     const [langEn, langRu, langAm] = await Promise.all([
-      this.languageRepository.findOne({ where: { name: ProductLanguage.ENGLISH } }),
-      this.languageRepository.findOne({ where: { name: ProductLanguage.RUSSIAN } }),
-      this.languageRepository.findOne({ where: { name: ProductLanguage.ARMENIA } }),
+      this.languageRepository.findOne({ where: { name: Languages.ENGLISH } }),
+      this.languageRepository.findOne({ where: { name: Languages.RUSSIAN } }),
+      this.languageRepository.findOne({ where: { name: Languages.ARMENIA } }),
     ]);
     if (!langEn || !langRu || !langAm) throw new NotFoundException('Language records missing in DB');
 
@@ -97,9 +97,9 @@ export class ProductsService {
 
     if (!translations || translations.length === 0) {
       const [langEn, langRu, langAm] = await Promise.all([
-        this.languageRepository.findOne({ where: { name: ProductLanguage.ENGLISH } }),
-        this.languageRepository.findOne({ where: { name: ProductLanguage.RUSSIAN } }),
-        this.languageRepository.findOne({ where: { name: ProductLanguage.ARMENIA } }),
+        this.languageRepository.findOne({ where: { name: Languages.ENGLISH } }),
+        this.languageRepository.findOne({ where: { name: Languages.RUSSIAN } }),
+        this.languageRepository.findOne({ where: { name: Languages.ARMENIA } }),
       ]);
       if (!langEn || !langRu || !langAm)
         throw new NotFoundException('Language records missing in DB');
@@ -127,15 +127,15 @@ export class ProductsService {
     } else {
       for (const tr of translations) {
         switch (tr.language.name) {
-          case ProductLanguage.ENGLISH:
+          case Languages.ENGLISH:
             tr.productName = updateDto.productNameEn || tr.productName;
             tr.description = updateDto.descriptionEn || tr.description;
             break;
-          case ProductLanguage.RUSSIAN:
+          case Languages.RUSSIAN:
             tr.productName = updateDto.productNameRu || tr.productName;
             tr.description = updateDto.descriptionRu || tr.description;
             break;
-          case ProductLanguage.ARMENIA:
+          case Languages.ARMENIA:
             tr.productName = updateDto.productNameAm || tr.productName;
             tr.description = updateDto.descriptionAm || tr.description;
             break;

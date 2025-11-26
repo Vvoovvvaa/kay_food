@@ -19,7 +19,7 @@ export class ProductsController {
     @Body() dto: CreateProductDto,
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
-    return this.productsService.create(dto, files || []);
+    return this.productsService.createProduct(dto, files || []);
   }
 
   @Get()

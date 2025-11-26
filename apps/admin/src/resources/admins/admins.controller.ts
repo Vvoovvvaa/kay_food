@@ -13,7 +13,6 @@ export class AdminController {
     return this.adminService.createAdmin(createAdminDto);
   }
 
-  @UseGuards(AdminAuthGuard)
   @Post('login')
   async adminLogin(@Body() login: AdminLogDto) {
     return this.adminService.adminLogin(login);

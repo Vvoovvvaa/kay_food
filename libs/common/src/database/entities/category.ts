@@ -1,14 +1,15 @@
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany } from "typeorm";
 import { Base } from "./base";
 import { MediaFiles } from "./media-files";
+import { CategoryTranslation } from "./category-translation";
 
 @Entity('Categories')
 export class Category extends Base{
-    @Column({name:"category_name"})
-    categoryName:string
+    // @Column({name:"category_name",nullable:false})
+    // name:string
 
-    @Column()
-    description:string
+    // @Column({nullable:false})
+    // description:string
 
     @ManyToOne(() => Category,category => category.children)
     @JoinColumn({name:'Parent_id'})
@@ -24,4 +25,7 @@ export class Category extends Base{
         inverseJoinColumn:{name:"media_file_id",referencedColumnName:"id"}
     })
     mediaFiles:MediaFiles[]
+
+    @OneToMany(() => CategoryTranslation,tr => tr.category)
+    translations:CategoryTranslation[]
 }

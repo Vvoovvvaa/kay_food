@@ -22,6 +22,7 @@ import { IDatabseConfig } from '../../../libs/common/src/models';
 import { LoggerMiddleware } from '../../../libs/common/src/middlewares';
 import { Admins } from '@app/common/database/entities/admins';
 import { AdminSecurity } from '@app/common/database/entities/admin-security';
+import { CategoryTranslation } from '@app/common/database/entities/category-translation';
 
 @Module({
   imports: [
@@ -54,13 +55,13 @@ import { AdminSecurity } from '@app/common/database/entities/admin-security';
             username: dbconfig.USER,
             password: dbconfig.PASSWORD,
             database: dbconfig.NAME,
-            entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins,Language,ProductTranslation,UserSecurity,AdminSecurity],
+            entities: [User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins,Language,ProductTranslation,UserSecurity,AdminSecurity,CategoryTranslation],
             synchronize: true,
           }
         }
       }),
   
-    TypeOrmModule.forFeature([User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins,Language,ProductTranslation,UserSecurity,AdminSecurity])
+    TypeOrmModule.forFeature([User,Product,Order,Category,SecretCode,MediaFiles,Ingredient,Order,OrderItem,Zone,Admins,Language,ProductTranslation,UserSecurity,AdminSecurity,CategoryTranslation])
     
 
   ],

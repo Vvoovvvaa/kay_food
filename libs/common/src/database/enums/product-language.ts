@@ -1,4 +1,4 @@
-export enum ProductLanguage{
+export enum Languages{
     ENGLISH = 'EN',
     RUSSIAN = 'RU',
     ARMENIA = 'AM'
