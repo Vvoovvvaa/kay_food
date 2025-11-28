@@ -42,13 +42,24 @@ export class ProductsController {
     return this.productsService.removeProduct(param.id);
   }
 
+  
+  @Post('add/ing')
+  async createIngredients(@Body() body: ingrediendDTO) {
+    return this.productsService.addIngredient(body);
+  }
+  
+  @Delete('ing/:id')
+  async deleteIngredient(@Param() param:IdDto){
+    return this.productsService.removeIngredient(param.id)
+  }
+  
+  @Get('ingredient')
+  async allIngredients(){
+    return this.productsService.allIngredients()
+  }
+  
   @Get(':id')
   async findOne(@Param() param: IdDto) {
     return this.productsService.findOne(param.id);
-  }
-
-  @Post('add/ing')
-  async createIngredients(@Body() body: ingrediendDTO) {
-    return this.productsService.addIngredients(body);
   }
 }

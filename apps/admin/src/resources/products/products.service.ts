@@ -187,11 +187,48 @@ export class ProductsService {
     return { message: 'Product successfully deleted' };
   }
 
-  async addIngredients(dto: ingrediendDTO) {
-    const existing = await this.ingredientsRepository.findOne({ where: { name: dto.name } });
-    if (existing) throw new ConflictException('Ingredient already exists');
+  async addIngredient(dto: ingrediendDTO) {
+    const langEn = await this.languageRepository.findOne({ where: { name: Languages.ENGLISH } });
+    const langRu = await this.languageRepository.findOne({ where: { name: Languages.RUSSIAN } });
+    const langAm = await this.languageRepository.findOne({ where: { name: Languages.ARMENIA } });
 
-    const ingredient = this.ingredientsRepository.create({ name: dto.name, price: dto.price });
-    return this.ingredientsRepository.save(ingredient);
+    if (!langEn || !langRu || !langAm) {
+      throw new NotFoundException("Languages not found in DB");
+    }
+
+    const exists = await this.ingredientsRepository.findOne({
+      where: {
+        name: dto.nameEn,
+        language: { id: langEn.id },
+      },
+      relations: ["language"],
+    });
+
+    if (exists) {
+      throw new ConflictException("Ingredient already exists");
+    }
+
+    const list = [
+      { name: dto.nameEn, price: dto.price, language: langEn },
+      { name: dto.nameRu, price: dto.price, language: langRu },
+      { name: dto.nameAm, price: dto.price, language: langAm },
+    ].map(item => this.ingredientsRepository.create(item));
+
+    return this.ingredientsRepository.save(list);
+  }
+
+  async removeIngredient(id: number) {
+    const ingredient = await this.ingredientsRepository.findOne({ where: { id } });
+    if (!ingredient) throw new NotFoundException("Ingredient not found");
+
+    await this.ingredientsRepository.remove(ingredient);
+
+    return { message: "Ingredient successfully deleted" };
+  }
+
+  async allIngredients(){
+    return this.ingredientsRepository.find({relations:['language']})
   }
 }
+
+

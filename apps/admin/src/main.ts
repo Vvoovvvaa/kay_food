@@ -12,13 +12,13 @@ async function bootstrap() {
 
   
   // app.useGlobalFilters(new HttpExceptionFilter());
-  // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     transform: true,
-  //     transformOptions: { enableImplicitConversion: true },
-  //   }),
-  // );
+  app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },                                                     
+    }),
+  );
 
   
   if (process.env.ENVIRONMENT === 'development') {
