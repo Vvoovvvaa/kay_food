@@ -8,6 +8,9 @@ import { FileHelper, PhotoValidator } from '../../../../../libs/common/src/helpe
 import { UpdateCategoryDto } from './dto/update-category.dtp';
 import { CategoryTranslation } from '@app/common/database/entities/category-translation';
 import { Languages } from '@app/common/database/enums';
+import { S3Service } from '@app/common/s3/s3.service';
+import { v4 as uuid } from 'uuid'
+
 
 @Injectable()
 export class CategoriesService {
@@ -20,7 +23,8 @@ export class CategoriesService {
     @InjectRepository(CategoryTranslation)
     private readonly categoryTranslateRepo: Repository<CategoryTranslation>,
     @InjectRepository(Language)
-    private readonly languageRepository: Repository<Language>
+    private readonly languageRepository: Repository<Language>,
+    private readonly s3service:S3Service
   ) { }
 
   async createCategory(dto: CreateCategoryDto, file?: Express.Multer.File) {
@@ -45,21 +49,19 @@ export class CategoriesService {
       relations: ['language']
     })
 
-    if (existing) {
-      throw new ConflictException('category name already exists')
-    }
 
     const photoEntities: MediaFiles[] = [];
 
     if (file) {
-      const validated = PhotoValidator.validator(file);
-      const photoEntity = this.mediaRepository.create({
-        path: FileHelper.saveFile(validated, 'category'),
-        size: validated.size,
-      });
-
-      const savedPhoto = await this.mediaRepository.save(photoEntity);
-      photoEntities.push(savedPhoto);
+        const type = file.originalname.split('.').reverse()[0]
+        const filePath = `Vova/Category/${type}/${uuid()}_${file.originalname}`
+        const photoEntity = this.mediaRepository.create({
+          path: filePath,
+          size: file.size
+        })
+        await this.s3service.putObject(file.buffer, filePath, file.mimetype)
+        photoEntities.push(photoEntity)
+      
     }
 
     if (existing) {
@@ -139,14 +141,16 @@ export class CategoriesService {
     }
 
     if (file) {
-      const validated = PhotoValidator.validator(file);
-      const photoEntity = this.mediaRepository.create({
-        path: FileHelper.saveFile(validated, 'category'),
-        size: validated.size,
-      });
-
-      const savedPhoto = await this.mediaRepository.save(photoEntity);
-      category.mediaFiles = [savedPhoto];
+        const type = file.originalname.split('.').reverse()[0]
+        const filePath = `Vova/Category/${type}/${uuid()}_${file.originalname}`
+        const photoEntity = this.mediaRepository.create({
+          path: filePath,
+          size: file.size
+        })
+        await this.s3service.putObject(file.buffer, filePath, file.mimetype)
+        const savedPhoto = await this.mediaRepository.save(photoEntity)
+        category.mediaFiles.push(savedPhoto)
+      
     }
 
     for (const tr of category.translations) {

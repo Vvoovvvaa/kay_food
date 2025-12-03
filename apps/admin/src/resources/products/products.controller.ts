@@ -7,6 +7,7 @@ import { ProductsService } from './products.service';
 import { ingrediendDTO } from './dto/ingredient.dto';
 import { IdDto } from '../../../../../libs/common/src/dto/id-param.dto';
 import { AdminAuthGuard } from '@app/common/guards/admin-auth-guard';
+import { PhotoValidationPipe } from '@app/common/validator/photo-validator';
 
 @UseGuards(AdminAuthGuard)
 @Controller('products')
@@ -17,7 +18,7 @@ export class ProductsController {
   @UseInterceptors(FilesInterceptor('photos'))
   async create(
     @Body() dto: CreateProductDto,
-    @UploadedFiles() files?: Express.Multer.File[],
+    @UploadedFiles(PhotoValidationPipe) files?: Express.Multer.File[],
   ) {
     return this.productsService.createProduct(dto, files || []);
   }
@@ -57,7 +58,7 @@ export class ProductsController {
   async allIngredients(){
     return this.productsService.allIngredients()
   }
-  
+
   @Get(':id')
   async findOne(@Param() param: IdDto) {
     return this.productsService.findOne(param.id);

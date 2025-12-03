@@ -4,6 +4,8 @@ import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import { ChechkCodeDto } from './dto/check-code.dto';
 import { AuthGuard } from '@app/common/guards';
+import { AuthUser } from '@app/common/decorators/auth-user.decorator';
+import type { IRequestUser } from '../users/models/request-user';
 
 
 @Controller('auth')
@@ -17,8 +19,8 @@ export class AuthController {
   }
   @UseGuards(AuthGuard)
   @Post('login')
-  async loginAndRegister(@Body() body:ChechkCodeDto){
-    return this.authService.authenfication(body)
+  async loginAndRegister(@AuthUser() user:IRequestUser,@Body() body:ChechkCodeDto){
+    return this.authService.authenfication(body,user.id)
   }
   
 }

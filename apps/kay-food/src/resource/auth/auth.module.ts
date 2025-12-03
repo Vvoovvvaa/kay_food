@@ -3,7 +3,7 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from '../../../../../libs/common/src/database/entities'
+import { User, UserSecurity } from '../../../../../libs/common/src/database/entities'
 import { SecretCode } from '../../../../../libs/common/src/database/entities';
 import { JwtModule } from '@nestjs/jwt';
 
@@ -11,7 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
   controllers: [AuthController],
   providers: [AuthService],
   imports:[
-    TypeOrmModule.forFeature([User,SecretCode]),
+    TypeOrmModule.forFeature([User,SecretCode,UserSecurity]),
     JwtModule.register({
       global:true,
       secret:process.env.JWT_SECRET,

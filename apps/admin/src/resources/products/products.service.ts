@@ -7,6 +7,9 @@ import { Repository } from "typeorm";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { ingrediendDTO } from "./dto/ingredient.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
+import { v4 as uuid } from 'uuid'
+import { S3Service } from "@app/common/s3/s3.service";
+
 
 @Injectable()
 export class ProductsService {
@@ -28,6 +31,8 @@ export class ProductsService {
 
     @InjectRepository(ProductTranslation)
     private readonly productTranslation: Repository<ProductTranslation>,
+
+    private readonly s3service: S3Service
   ) { }
 
   async createProduct(dto: CreateProductDto, files?: Express.Multer.File[]) {
@@ -44,15 +49,16 @@ export class ProductsService {
     if (!category) throw new NotFoundException('Category not found');
 
     const photoEntities: MediaFiles[] = [];
-    if (files?.length) {
-      for (const file of files) {
-        const validated = PhotoValidator.validator(file);
+    if (files) {
+      for (let file of files) {
+        const type = file.originalname.split('.').reverse()[0]
+        const filePath = `Vova/Products/${type}/${uuid()}_${file.originalname}`
         const photoEntity = this.mediaRepository.create({
-          path: FileHelper.saveFile(validated, 'products'),
-          size: validated.size,
-        });
-        const savedPhoto = await this.mediaRepository.save(photoEntity);
-        photoEntities.push(savedPhoto);
+          path: filePath,
+          size: file.size
+        })
+        await this.s3service.putObject(file.buffer, filePath, file.mimetype)
+        photoEntities.push(photoEntity)
       }
     }
 
@@ -154,15 +160,17 @@ export class ProductsService {
       product.category = newCategory;
     }
 
-    if (files?.length) {
-      for (const file of files) {
-        const validated = PhotoValidator.validator(file);
-        const photo = this.mediaRepository.create({
-          path: FileHelper.saveFile(validated, 'products'),
-          size: validated.size,
-        });
-        const savedPhoto = await this.mediaRepository.save(photo);
-        product.mediaFiles.push(savedPhoto);
+    if (files) {
+      for (let file of files) {
+        const type = file.originalname.split('.').reverse()[0]
+        const filePath = `Vova/Products/${type}/${uuid()}_${file.originalname}`
+        const photoEntity = this.mediaRepository.create({
+          path: filePath,
+          size: file.size
+        })
+        await this.s3service.putObject(file.buffer, filePath, file.mimetype)
+        const savedPhoto = await this.mediaRepository.save(photoEntity)
+        product.mediaFiles.push(savedPhoto)
       }
     }
 
@@ -226,8 +234,8 @@ export class ProductsService {
     return { message: "Ingredient successfully deleted" };
   }
 
-  async allIngredients(){
-    return this.ingredientsRepository.find({relations:['language']})
+  async allIngredients() {
+    return this.ingredientsRepository.find({ relations: ['language'] })
   }
 }
 

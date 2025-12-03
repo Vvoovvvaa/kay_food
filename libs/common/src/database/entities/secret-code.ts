@@ -7,7 +7,7 @@ export class SecretCode extends Base{
     @Column({nullable:false})
     code:string
 
-    @ManyToOne(() => User,{eager:true})
+    @ManyToOne(() => User,user => user.secretCodes, {eager:true,onDelete:'SET NULL'})
     @JoinColumn({name:"user_id"})
     user:User
 }

@@ -23,6 +23,8 @@ import { LoggerMiddleware } from '../../../libs/common/src/middlewares';
 import { Admins } from '@app/common/database/entities/admins';
 import { AdminSecurity } from '@app/common/database/entities/admin-security';
 import { CategoryTranslation } from '@app/common/database/entities/category-translation';
+import { cloudconifd } from '@app/common/configs';
+import { S3Module } from '@app/common/s3/s3.module';
 
 @Module({
   imports: [
@@ -32,11 +34,12 @@ import { CategoryTranslation } from '@app/common/database/entities/category-tran
     OrdersModule,
     UsersModule,
     ZonesModule,
+    S3Module,
 
     ConfigModule.forRoot({
       isGlobal:true,
       validationSchema: validationScehma,
-      load: [jwtConfig,databaseConfig]
+      load: [jwtConfig,databaseConfig,cloudconifd]
     }),
 
     ServeStaticModule.forRoot({
