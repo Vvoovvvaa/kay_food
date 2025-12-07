@@ -28,6 +28,9 @@ export class User extends Base {
   })
   role: UserRole;
 
+  @Column({nullable:true})
+  email?:string
+
   @ManyToMany(() => MediaFiles, { cascade: true })
   @JoinTable({
     name: 'user_media_files',
