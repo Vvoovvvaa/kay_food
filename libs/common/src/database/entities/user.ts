@@ -9,7 +9,7 @@ import { accauntStatus } from "../enums";
 
 @Entity('users')
 export class User extends Base {
-  @Column()
+  @Column({nullable:true})
   phone: string
 
   @Column({ name: 'first_name', nullable: true })
@@ -20,6 +20,9 @@ export class User extends Base {
 
   @Column({ nullable: true })
   age?: number
+
+  @Column({nullable:true,unique:true})
+  facebookId:string
 
   @Column({
     type: 'enum',

@@ -20,8 +20,9 @@ import { jwtConfig } from '../../../libs/common/src/configs/jwt.config';
 import { databaseConfig } from '../../../libs/common/src/configs/database.config';
 import { IDatabseConfig } from '../../../libs/common/src/models';
 import { LoggerMiddleware } from '../../../libs/common/src/middlewares';
-import { googleconfig } from '@app/common/configs';
+import { faceboockClientConfig, googleconfig } from '@app/common/configs';
 import { GoogleStrategy } from '@app/common/strategy/google';
+import { FacebookStrategy } from '@app/common/strategy/facebook';
 
 @Module({
   imports: [
@@ -35,7 +36,7 @@ import { GoogleStrategy } from '@app/common/strategy/google';
     ConfigModule.forRoot({
       isGlobal:true,
       validationSchema: validationScehma,
-      load: [jwtConfig,databaseConfig,googleconfig]
+      load: [jwtConfig,databaseConfig,googleconfig,faceboockClientConfig]
     }),
 
     ServeStaticModule.forRoot({
@@ -65,7 +66,7 @@ import { GoogleStrategy } from '@app/common/strategy/google';
 
   ],
   controllers: [AppController],
-  providers: [AppService,GoogleStrategy],
+  providers: [AppService,GoogleStrategy,FacebookStrategy],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

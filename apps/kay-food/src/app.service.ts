@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 
-import { UserSecurity } from '@app/common/database/entities';
+import { MediaFiles, UserSecurity } from '@app/common/database/entities';
 import { User } from '@app/common/database/entities';
 import { accauntStatus } from '@app/common/database/enums';
 
@@ -17,6 +17,9 @@ export class AppService {
     @InjectRepository(UserSecurity)
     private readonly securityRepository: Repository<UserSecurity>,
 
+    @InjectRepository(MediaFiles)
+    private readonly mediaFilesRepository: Repository<MediaFiles>,
+
     private readonly jwtService: JwtService,
   ) { }
 
@@ -25,9 +28,16 @@ export class AppService {
       return { message: 'No user from OAuth provider' };
     }
 
-    const { email, firstName, lastName,openid } = req.user;
+    const { facebookId, email, firstName, lastName,picture } = req.user;
 
     let user: User | null = null;
+
+    if (facebookId) {
+      user = await this.userRepository.findOne({
+        where: { facebookId },
+        relations: ['security'],
+      });
+  } 
 
     if (!user && email) {
       user = await this.userRepository.findOne({
@@ -41,6 +51,7 @@ export class AppService {
         firstName,
         lastName,
         email: email || null,
+        facebookId: facebookId || null,
         accountStatus: accauntStatus.ACTIVE,
       });
       await this.userRepository.save(user);
@@ -48,6 +59,19 @@ export class AppService {
       const security = this.securityRepository.create({ user });
       await this.securityRepository.save(security);
       user.security = security;
+
+      if (picture) {
+        const media = this.mediaFilesRepository.create({
+          path: picture,
+          size: 0,
+          meta: { provider: 'oauth' },
+        });
+
+        await this.mediaFilesRepository.save(media);
+
+        user.mediaFiles = [media];
+        await this.userRepository.save(user);
+      }
     }
 
     const payload = {
@@ -62,7 +86,6 @@ export class AppService {
       message: 'User logged in via OAuth provider',
       user,
       jwt,
-      openid
     };
   }
 }
