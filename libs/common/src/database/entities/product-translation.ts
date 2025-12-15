@@ -3,7 +3,7 @@ import { Product } from "./product";
 import { Language } from "./languages";
 import { Base } from "./base";
 
-@Entity()
+@Entity("product_translation")
 export class ProductTranslation extends Base {
   @Column({ name: "product_name" })
   productName: string;

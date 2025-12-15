@@ -4,6 +4,7 @@ import { AppModule } from './app.module';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from '../../../libs/common/src/filters/exeption-filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { LanguageInterceptor } from '@app/common/interceptors/language.interceptor';
 
 const PORT = process.env.PORT || 3000;
 
@@ -12,13 +13,17 @@ async function bootstrap() {
 
   
   // app.useGlobalFilters(new HttpExceptionFilter());
-  // app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-  // app.useGlobalPipes(
-  //   new ValidationPipe({
-  //     transform: true,
-  //     transformOptions: { enableImplicitConversion: true },
-  //   }),
-  // );
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector)),
+    app.get(LanguageInterceptor),    
+  )
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  );
 
   
   if (process.env.ENVIRONMENT === 'development') {

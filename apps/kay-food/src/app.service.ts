@@ -3,9 +3,9 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Repository } from 'typeorm';
 
-import { MediaFiles, UserSecurity } from '@app/common/database/entities';
+import { Language, MediaFiles, UserSecurity } from '@app/common/database/entities';
 import { User } from '@app/common/database/entities';
-import { accauntStatus } from '@app/common/database/enums';
+import { accauntStatus, Languages } from '@app/common/database/enums';
 
 @Injectable()
 export class AppService {
@@ -20,6 +20,9 @@ export class AppService {
     @InjectRepository(MediaFiles)
     private readonly mediaFilesRepository: Repository<MediaFiles>,
 
+    @InjectRepository(Language)
+    private readonly languageReposiroty: Repository<Language>,
+
     private readonly jwtService: JwtService,
   ) { }
 
@@ -28,7 +31,7 @@ export class AppService {
       return { message: 'No user from OAuth provider' };
     }
 
-    const { facebookId, email, firstName, lastName,picture } = req.user;
+    const { facebookId, email, firstName, lastName,picture} = req.user;
 
     let user: User | null = null;
 
@@ -45,6 +48,8 @@ export class AppService {
         relations: ['security'],
       });
     }
+
+
 
     if (!user) {
       user = this.userRepository.create({
@@ -76,6 +81,7 @@ export class AppService {
 
     const payload = {
       sub: user.id,
+      facebookId,
       email,
       firstName,
       lastName,

@@ -23,6 +23,7 @@ import { LoggerMiddleware } from '../../../libs/common/src/middlewares';
 import { faceboockClientConfig, googleconfig } from '@app/common/configs';
 import { GoogleStrategy } from '@app/common/strategy/google';
 import { FacebookStrategy } from '@app/common/strategy/facebook';
+import { LanguageInterceptor } from '@app/common/interceptors/language.interceptor';
 
 @Module({
   imports: [
@@ -66,7 +67,7 @@ import { FacebookStrategy } from '@app/common/strategy/facebook';
 
   ],
   controllers: [AppController],
-  providers: [AppService,GoogleStrategy,FacebookStrategy],
+  providers: [AppService,GoogleStrategy,FacebookStrategy,LanguageInterceptor],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

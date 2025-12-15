@@ -7,16 +7,20 @@ import { Category} from '../../../../../libs/common/src/database/entities';
 
 @Injectable()
 export class CategoriesService {
-
   constructor(
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) { }
+  ) {}
 
-  async findAll() {
-    return await this.categoryRepository.find()
+  async findAll(lang:string) {
+    const category = await this.categoryRepository.find({ relations: ['translations','translations.language', 'mediaFiles'] })
+
+    return  category.map(p => ({
+      ...p,
+      translations: p.translations.find(t => t.language.name === lang)
+
+    }))
   }
-
 }
 
 
